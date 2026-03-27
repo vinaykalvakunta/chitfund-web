@@ -53,8 +53,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       UPDATE chit_funds
       SET name = ${name}, total_value = ${total_value}, monthly_contribution = ${monthly_contribution},
           total_members = ${total_members}, duration_months = ${duration_months}, start_date = ${start_date},
-          description = ${description || null}, status = ${status || 'pending'},
-          updated_at = NOW()
+          description = ${description || null}, status = ${status || 'pending'}
       WHERE id = ${id}
       RETURNING *
     `
