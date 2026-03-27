@@ -25,7 +25,6 @@ const navigation = [
   { name: "Chit Funds", href: "/chit-funds", icon: Wallet },
   { name: "Members", href: "/members", icon: Users },
   { name: "Payments", href: "/payments", icon: Receipt },
-  { name: "Auctions", href: "/auctions", icon: Gavel },
   { name: "Reports", href: "/reports", icon: BarChart3 },
 ]
 

@@ -44,8 +44,6 @@ interface ChitFundPerformance {
   status: string
   member_count: string
   collected_amount: string
-  auctions_completed: string
-  prizes_disbursed: string
 }
 
 interface TopMember {
@@ -76,12 +74,11 @@ interface Summary {
   active_members: string
   active_chit_funds: string
   total_collected: string
-  total_disbursed: string
-  total_bid_savings: string
   pending_payments: string
 }
 
 interface ReportsData {
+  error?: string
   monthlyCollections: MonthlyCollection[]
   chitFundPerformance: ChitFundPerformance[]
   topMembers: TopMember[]
@@ -167,8 +164,6 @@ export default function ReportsPage() {
     active_members: "0",
     active_chit_funds: "0",
     total_collected: "0",
-    total_disbursed: "0",
-    total_bid_savings: "0",
     pending_payments: "0",
   }
 
@@ -194,7 +189,7 @@ export default function ReportsPage() {
       </div>
 
       {/* Summary Stats */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-2">
         <Card>
           <CardContent className="pt-6">
             <div className="flex items-center gap-4">
@@ -204,32 +199,6 @@ export default function ReportsPage() {
               <div>
                 <p className="text-sm text-muted-foreground">Total Collected</p>
                 <p className="text-2xl font-bold">{formatCompactAmount(summary.total_collected)}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center gap-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-success/10">
-                <TrendingUp className="h-6 w-6 text-success" />
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Prizes Disbursed</p>
-                <p className="text-2xl font-bold">{formatCompactAmount(summary.total_disbursed)}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center gap-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
-                <PiggyBank className="h-6 w-6 text-primary" />
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Bid Savings</p>
-                <p className="text-2xl font-bold">{formatCompactAmount(summary.total_bid_savings)}</p>
               </div>
             </div>
           </CardContent>
@@ -251,11 +220,11 @@ export default function ReportsPage() {
 
       {/* Charts Row */}
       <div className="grid gap-6 lg:grid-cols-2">
-        {/* Monthly Collections Chart */}
+        {/* Monthly Collections Point Chart */}
         <Card>
           <CardHeader>
-            <CardTitle>Monthly Collections</CardTitle>
-            <CardDescription>Payment collections over the last 12 months</CardDescription>
+            <CardTitle>Monthly Collections Trend</CardTitle>
+            <CardDescription>Payment collections over the last 12 months with Points</CardDescription>
           </CardHeader>
           <CardContent>
             {chartData.length === 0 ? (
@@ -263,7 +232,7 @@ export default function ReportsPage() {
             ) : (
               <ChartContainer config={{}} className="h-[300px]">
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={chartData}>
+                  <LineChart data={chartData}>
                     <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
                     <XAxis dataKey="month" className="text-xs" tick={{ fill: "hsl(var(--muted-foreground))" }} />
                     <YAxis
@@ -289,8 +258,8 @@ export default function ReportsPage() {
                         return null
                       }}
                     />
-                    <Bar dataKey="amount" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
-                  </BarChart>
+                    <Line type="monotone" dataKey="amount" stroke="hsl(var(--primary))" strokeWidth={2} dot={{ r: 4, strokeWidth: 2 }} activeDot={{ r: 6 }} />
+                  </LineChart>
                 </ResponsiveContainer>
               </ChartContainer>
             )}
@@ -417,7 +386,6 @@ export default function ReportsPage() {
                   <TableRow>
                     <TableHead>Name</TableHead>
                     <TableHead>Collected</TableHead>
-                    <TableHead>Disbursed</TableHead>
                     <TableHead>Status</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -425,15 +393,9 @@ export default function ReportsPage() {
                   {chitFundPerformance.map((fund) => (
                     <TableRow key={fund.id}>
                       <TableCell>
-                        <div>
-                          <p className="font-medium">{fund.name}</p>
-                          <p className="text-xs text-muted-foreground">
-                            {fund.auctions_completed} auctions
-                          </p>
-                        </div>
+                        <p className="font-medium">{fund.name}</p>
                       </TableCell>
                       <TableCell className="text-success">{formatCompactAmount(fund.collected_amount)}</TableCell>
-                      <TableCell>{formatCompactAmount(fund.prizes_disbursed)}</TableCell>
                       <TableCell>
                         <Badge
                           variant={fund.status === "active" ? "default" : "secondary"}

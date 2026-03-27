@@ -1,6 +1,8 @@
 import { neon } from "@neondatabase/serverless"
 import { NextRequest, NextResponse } from "next/server"
 
+export const dynamic = 'force-dynamic';
+
 const sql = neon(process.env.DATABASE_URL!)
 
 export async function GET(request: NextRequest) {
@@ -65,3 +67,4 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Failed to create member" }, { status: 500 })
   }
 }
+

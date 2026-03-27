@@ -1,6 +1,8 @@
 import { neon } from "@neondatabase/serverless"
 import { NextResponse } from "next/server"
 
+export const dynamic = 'force-dynamic';
+
 const sql = neon(process.env.DATABASE_URL!)
 
 export async function GET() {
@@ -96,3 +98,4 @@ export async function GET() {
     return NextResponse.json({ error: "Failed to fetch dashboard data" }, { status: 500 })
   }
 }
+

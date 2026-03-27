@@ -1,6 +1,8 @@
 import { neon } from "@neondatabase/serverless"
 import { NextRequest, NextResponse } from "next/server"
 
+export const dynamic = 'force-dynamic';
+
 const sql = neon(process.env.DATABASE_URL!)
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -27,16 +29,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       ORDER BY cfm.ticket_number
     `
 
-    // Get auctions for this chit fund
-    const auctions = await sql`
-      SELECT a.*, m.name as winner_name, m.phone as winner_phone
-      FROM auctions a
-      LEFT JOIN members m ON m.id = a.winner_id
-      WHERE a.chit_fund_id = ${id}
-      ORDER BY a.month_number
-    `
-
-    return NextResponse.json({ ...chitFund[0], members, auctions })
+    return NextResponse.json({ ...chitFund[0], members })
   } catch (error) {
     console.error("Error fetching chit fund:", error)
     return NextResponse.json({ error: "Failed to fetch chit fund" }, { status: 500 })
@@ -82,7 +75,6 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
 
     // Delete related records first (cascade should handle this, but being explicit)
     await sql`DELETE FROM transactions WHERE chit_fund_id = ${id}`
-    await sql`DELETE FROM auctions WHERE chit_fund_id = ${id}`
     await sql`DELETE FROM payments WHERE chit_fund_id = ${id}`
     await sql`DELETE FROM chit_fund_members WHERE chit_fund_id = ${id}`
     

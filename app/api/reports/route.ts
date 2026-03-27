@@ -1,6 +1,8 @@
 import { neon } from "@neondatabase/serverless"
 import { NextRequest, NextResponse } from "next/server"
 
+export const dynamic = 'force-dynamic';
+
 const sql = neon(process.env.DATABASE_URL!)
 
 export async function GET(request: NextRequest) {
@@ -28,9 +30,7 @@ export async function GET(request: NextRequest) {
         cf.current_month,
         cf.status,
         (SELECT COUNT(*) FROM chit_fund_members cfm WHERE cfm.chit_fund_id = cf.id) as member_count,
-        (SELECT COALESCE(SUM(amount), 0) FROM payments p WHERE p.chit_fund_id = cf.id AND p.status = 'paid') as collected_amount,
-        (SELECT COUNT(*) FROM auctions a WHERE a.chit_fund_id = cf.id AND a.is_completed = true) as auctions_completed,
-        (SELECT COALESCE(SUM(prize_amount), 0) FROM auctions a WHERE a.chit_fund_id = cf.id AND a.is_completed = true) as prizes_disbursed
+        (SELECT COALESCE(SUM(amount), 0) FROM payments p WHERE p.chit_fund_id = cf.id AND p.status = 'paid') as collected_amount
       FROM chit_funds cf
       ORDER BY cf.created_at DESC
       LIMIT 10
@@ -85,8 +85,6 @@ export async function GET(request: NextRequest) {
         (SELECT COUNT(*) FROM members WHERE status = 'active') as active_members,
         (SELECT COUNT(*) FROM chit_funds WHERE status = 'active') as active_chit_funds,
         (SELECT COALESCE(SUM(amount), 0) FROM payments WHERE status = 'paid') as total_collected,
-        (SELECT COALESCE(SUM(prize_amount), 0) FROM auctions WHERE is_completed = true) as total_disbursed,
-        (SELECT COALESCE(SUM(winning_bid), 0) FROM auctions WHERE is_completed = true) as total_bid_savings,
         (SELECT COUNT(*) FROM payments WHERE status = 'pending') as pending_payments
     `
 

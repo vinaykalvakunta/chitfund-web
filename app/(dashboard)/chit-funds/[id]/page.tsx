@@ -12,9 +12,7 @@ import {
   Calendar,
   IndianRupee,
   Percent,
-  Plus,
   UserPlus,
-  Gavel,
   Trash2,
   Loader2,
 } from "lucide-react"
@@ -64,16 +62,6 @@ interface Member {
   has_won_auction: boolean
 }
 
-interface Auction {
-  id: string
-  month_number: number
-  winner_name: string | null
-  bid_amount: string
-  prize_amount: string
-  auction_date: string
-  status: string
-}
-
 interface ChitFund {
   id: string
   name: string
@@ -88,7 +76,6 @@ interface ChitFund {
   status: string
   commission_percentage: string
   members: Member[]
-  auctions: Auction[]
 }
 
 export default function ChitFundDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -392,7 +379,6 @@ export default function ChitFundDetailPage({ params }: { params: Promise<{ id: s
       <Tabs defaultValue="members">
         <TabsList>
           <TabsTrigger value="members">Members ({memberCount})</TabsTrigger>
-          <TabsTrigger value="auctions">Auctions ({chitFund.auctions?.length || 0})</TabsTrigger>
         </TabsList>
 
         <TabsContent value="members" className="mt-4">
@@ -481,53 +467,6 @@ export default function ChitFundDetailPage({ params }: { params: Promise<{ id: s
                             </Button>
                           )}
                         </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              )}
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="auctions" className="mt-4">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between">
-              <div>
-                <CardTitle>Auctions</CardTitle>
-                <CardDescription>Monthly auction history</CardDescription>
-              </div>
-              {chitFund.status === "active" && (
-                <Button asChild>
-                  <Link href={`/auctions/new?chit_fund_id=${id}`}>
-                    <Gavel className="mr-2 h-4 w-4" />
-                    Record Auction
-                  </Link>
-                </Button>
-              )}
-            </CardHeader>
-            <CardContent>
-              {chitFund.auctions?.length === 0 ? (
-                <p className="text-sm text-muted-foreground text-center py-8">No auctions recorded yet</p>
-              ) : (
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Month</TableHead>
-                      <TableHead>Winner</TableHead>
-                      <TableHead>Bid Amount</TableHead>
-                      <TableHead>Prize Amount</TableHead>
-                      <TableHead>Date</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {chitFund.auctions?.map((auction) => (
-                      <TableRow key={auction.id}>
-                        <TableCell className="font-medium">Month {auction.month_number}</TableCell>
-                        <TableCell>{auction.winner_name || "-"}</TableCell>
-                        <TableCell>{formatAmount(auction.bid_amount)}</TableCell>
-                        <TableCell>{formatAmount(auction.prize_amount)}</TableCell>
-                        <TableCell>{formatDate(auction.auction_date)}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
