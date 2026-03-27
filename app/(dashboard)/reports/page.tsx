@@ -25,7 +25,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Skeleton } from "@/components/ui/skeleton"
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json())
+const fetcher = async (url: string) => { const res = await fetch(url); if (!res.ok) { const data = await res.json().catch(() => ({})); throw new Error(data.error || 'Failed to fetch data'); } return res.json(); }
 
 const COLORS = ["hsl(var(--chart-1))", "hsl(var(--chart-2))", "hsl(var(--chart-3))", "hsl(var(--chart-4))"]
 
@@ -89,6 +89,7 @@ interface ReportsData {
 
 export default function ReportsPage() {
   const { data, error, isLoading } = useSWR<ReportsData>("/api/reports", fetcher)
+  const [chartType, setChartType] = React.useState<"line" | "bar" | "pie">("line")
 
   const formatAmount = (amount: string | number) => {
     const num = typeof amount === "string" ? parseFloat(amount) : amount
@@ -222,9 +223,16 @@ export default function ReportsPage() {
       <div className="grid gap-6 lg:grid-cols-2">
         {/* Monthly Collections Point Chart */}
         <Card>
-          <CardHeader>
-            <CardTitle>Monthly Collections Trend</CardTitle>
-            <CardDescription>Payment collections over the last 12 months with Points</CardDescription>
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <div className="space-y-1">
+              <CardTitle>Monthly Collections Trend</CardTitle>
+              <CardDescription>Payment collections over the last 12 months</CardDescription>
+            </div>
+            <div className="flex items-center gap-1 bg-muted p-1 rounded-md">
+              <Button variant={chartType === "line" ? "default" : "ghost"} size="sm" className="h-7 px-2 text-xs" onClick={() => setChartType("line")}>Line</Button>
+              <Button variant={chartType === "bar" ? "default" : "ghost"} size="sm" className="h-7 px-2 text-xs" onClick={() => setChartType("bar")}>Bar</Button>
+              <Button variant={chartType === "pie" ? "default" : "ghost"} size="sm" className="h-7 px-2 text-xs" onClick={() => setChartType("pie")}>Pie</Button>
+            </div>
           </CardHeader>
           <CardContent>
             {chartData.length === 0 ? (
@@ -232,34 +240,100 @@ export default function ReportsPage() {
             ) : (
               <ChartContainer config={{}} className="h-[300px]">
                 <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={chartData}>
-                    <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
-                    <XAxis dataKey="month" className="text-xs" tick={{ fill: "hsl(var(--muted-foreground))" }} />
-                    <YAxis
-                      className="text-xs"
-                      tick={{ fill: "hsl(var(--muted-foreground))" }}
-                      tickFormatter={(value) => formatCompactAmount(value)}
-                    />
-                    <ChartTooltip
-                      content={({ active, payload }) => {
-                        if (active && payload && payload.length) {
-                          return (
-                            <div className="rounded-lg border bg-background p-2 shadow-sm">
-                              <p className="text-sm font-medium">{payload[0].payload.month}</p>
-                              <p className="text-sm text-muted-foreground">
-                                Amount: {formatAmount(payload[0].value as number)}
-                              </p>
-                              <p className="text-sm text-muted-foreground">
-                                Payments: {payload[0].payload.count}
-                              </p>
-                            </div>
-                          )
-                        }
-                        return null
-                      }}
-                    />
-                    <Line type="monotone" dataKey="amount" stroke="hsl(var(--primary))" strokeWidth={2} dot={{ r: 4, strokeWidth: 2 }} activeDot={{ r: 6 }} />
-                  </LineChart>
+                  {chartType === "line" ? (
+                    <LineChart data={chartData}>
+                      <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                      <XAxis dataKey="month" className="text-xs" tick={{ fill: "hsl(var(--muted-foreground))" }} />
+                      <YAxis
+                        className="text-xs"
+                        tick={{ fill: "hsl(var(--muted-foreground))" }}
+                        tickFormatter={(value) => formatCompactAmount(value)}
+                      />
+                      <ChartTooltip
+                        content={({ active, payload }) => {
+                          if (active && payload && payload.length) {
+                            return (
+                              <div className="rounded-lg border bg-background p-2 shadow-sm">
+                                <p className="text-sm font-medium">{payload[0].payload.month}</p>
+                                <p className="text-sm text-muted-foreground">
+                                  Amount: {formatAmount(payload[0].value as number)}
+                                </p>
+                                <p className="text-sm text-muted-foreground">
+                                  Payments: {payload[0].payload.count}
+                                </p>
+                              </div>
+                            )
+                          }
+                          return null
+                        }}
+                      />
+                      <Line type="monotone" dataKey="amount" stroke="hsl(var(--primary))" strokeWidth={2} dot={{ r: 4, strokeWidth: 2 }} activeDot={{ r: 6 }} />
+                    </LineChart>
+                  ) : chartType === "bar" ? (
+                    <BarChart data={chartData}>
+                      <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                      <XAxis dataKey="month" className="text-xs" tick={{ fill: "hsl(var(--muted-foreground))" }} />
+                      <YAxis
+                        className="text-xs"
+                        tick={{ fill: "hsl(var(--muted-foreground))" }}
+                        tickFormatter={(value) => formatCompactAmount(value)}
+                      />
+                      <ChartTooltip
+                        content={({ active, payload }) => {
+                          if (active && payload && payload.length) {
+                            return (
+                              <div className="rounded-lg border bg-background p-2 shadow-sm">
+                                <p className="text-sm font-medium">{payload[0].payload.month}</p>
+                                <p className="text-sm text-muted-foreground">
+                                  Amount: {formatAmount(payload[0].value as number)}
+                                </p>
+                                <p className="text-sm text-muted-foreground">
+                                  Payments: {payload[0].payload.count}
+                                </p>
+                              </div>
+                            )
+                          }
+                          return null
+                        }}
+                      />
+                      <Bar dataKey="amount" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+                    </BarChart>
+                  ) : (
+                    <PieChart>
+                      <Pie
+                        data={chartData}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={60}
+                        outerRadius={90}
+                        paddingAngle={2}
+                        dataKey="amount"
+                        nameKey="month"
+                      >
+                        {chartData.map((_, index) => (
+                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        ))}
+                      </Pie>
+                      <ChartTooltip
+                        content={({ active, payload }) => {
+                          if (active && payload && payload.length) {
+                            return (
+                              <div className="rounded-lg border bg-background p-2 shadow-sm">
+                                <p className="text-sm font-medium">{payload[0].name}</p>
+                                <p className="text-sm text-muted-foreground">
+                                  Amount: {formatAmount(payload[0].value as number)}
+                                </p>
+                                <p className="text-sm text-muted-foreground">
+                                  Payments: {payload[0].payload.count}
+                                </p>
+                              </div>
+                            )
+                          }
+                          return null
+                        }}
+                      />
+                    </PieChart>
+                  )}
                 </ResponsiveContainer>
               </ChartContainer>
             )}
@@ -456,3 +530,4 @@ export default function ReportsPage() {
     </div>
   )
 }
+

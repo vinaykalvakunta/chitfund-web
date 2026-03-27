@@ -25,7 +25,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton"
 import { Empty } from "@/components/ui/empty"
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json())
+const fetcher = async (url: string) => { const res = await fetch(url); if (!res.ok) { const data = await res.json().catch(() => ({})); throw new Error(data.error || 'Failed to fetch data'); } return res.json(); }
 
 interface ChitFund {
   id: string
@@ -241,3 +241,4 @@ export default function ChitFundsPage() {
     </div>
   )
 }
+

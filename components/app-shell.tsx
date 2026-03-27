@@ -65,9 +65,9 @@ function NavLink({
 function Sidebar() {
   return (
     <div className="flex h-full flex-col bg-sidebar">
-      <div className="flex h-16 items-center gap-2 border-b border-sidebar-border px-6">
-        <Wallet className="h-7 w-7 text-sidebar-primary" />
-        <span className="text-lg font-semibold text-sidebar-foreground">ChitFund</span>
+      <div className="flex h-16 items-center gap-3 border-b border-sidebar-border px-6">
+        <img src="/logo.png" alt="Jyothi's Chitfund Logo" className="h-8 w-8 object-contain" />
+        <span className="text-lg font-bold text-sidebar-foreground tracking-tight">Jyothi's Chitfund</span>
       </div>
       <ScrollArea className="flex-1 px-3 py-4">
         <nav className="flex flex-col gap-1">
@@ -112,9 +112,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <SheetContent side="left" className="w-64 p-0">
               <div className="flex h-full flex-col">
                 <div className="flex h-16 items-center justify-between border-b px-4">
-                  <div className="flex items-center gap-2">
-                    <Wallet className="h-6 w-6 text-primary" />
-                    <span className="text-lg font-semibold">ChitFund</span>
+                  <div className="flex items-center gap-3">
+                    <img src="/logo.png" alt="Jyothi's Chitfund Logo" className="h-7 w-7 object-contain" />
+                    <span className="text-lg font-bold tracking-tight">Jyothi's Chitfund</span>
                   </div>
                   <Button variant="ghost" size="icon" onClick={() => setOpen(false)}>
                     <X className="h-5 w-5" />
@@ -130,9 +130,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               </div>
             </SheetContent>
           </Sheet>
-          <div className="flex items-center gap-2">
-            <Wallet className="h-6 w-6 text-primary" />
-            <span className="text-lg font-semibold">ChitFund Manager</span>
+          <div className="flex items-center gap-3">
+            <img src="/logo.png" alt="Jyothi's Chitfund Logo" className="h-7 w-7 object-contain" />
+            <span className="text-lg font-bold tracking-tight">Jyothi's Chitfund</span>
           </div>
         </header>
 
