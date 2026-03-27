@@ -29,13 +29,13 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
   try {
     const { id } = await params
     const body = await request.json()
-    const { name, phone, email, address, status } = body
+    const { name, phone, email, address, status, aadhar_number, pan_number } = body
 
     const result = await sql`
       UPDATE members
       SET name = ${name}, phone = ${phone}, email = ${email || null}, 
           address = ${address || null}, status = ${status || 'active'},
-          updated_at = NOW()
+          aadhar_number = ${aadhar_number || null}, pan_number = ${pan_number || null}
       WHERE id = ${id}
       RETURNING *
     `
