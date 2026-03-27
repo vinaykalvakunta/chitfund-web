@@ -59,7 +59,6 @@ interface Member {
   phone: string
   email: string | null
   joined_at: string
-  has_won_auction: boolean
 }
 
 interface ChitFund {
@@ -438,7 +437,6 @@ export default function ChitFundDetailPage({ params }: { params: Promise<{ id: s
                       <TableHead>Name</TableHead>
                       <TableHead>Phone</TableHead>
                       <TableHead>Joined</TableHead>
-                      <TableHead>Won Auction</TableHead>
                       <TableHead></TableHead>
                     </TableRow>
                   </TableHeader>
@@ -448,13 +446,6 @@ export default function ChitFundDetailPage({ params }: { params: Promise<{ id: s
                         <TableCell className="font-medium">{member.name}</TableCell>
                         <TableCell>{member.phone}</TableCell>
                         <TableCell>{formatDate(member.joined_at)}</TableCell>
-                        <TableCell>
-                          {member.has_won_auction ? (
-                            <Badge className="bg-success text-success-foreground">Yes</Badge>
-                          ) : (
-                            <Badge variant="secondary">No</Badge>
-                          )}
-                        </TableCell>
                         <TableCell>
                           {chitFund.status === "pending" && (
                             <Button
