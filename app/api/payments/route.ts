@@ -78,8 +78,8 @@ export async function POST(request: NextRequest) {
     dueDate.setMonth(dueDate.getMonth() + 1)
     
     const result = await sql`
-      INSERT INTO payments (chit_fund_id, member_id, amount, month_number, due_date, paid_date, notes, status)
-      VALUES (${chit_fund_id}, ${member_id}, ${amount}, ${month_number}, ${dueDate.toISOString()}, ${payment_date || new Date().toISOString()}, ${notes || null}, 'paid')
+      INSERT INTO payments (chit_fund_id, member_id, amount, month_number, due_date, paid_date, payment_method, notes, status)
+      VALUES (${chit_fund_id}, ${member_id}, ${amount}, ${month_number}, ${dueDate.toISOString()}, ${payment_date || new Date().toISOString()}, ${payment_method || 'cash'}, ${notes || null}, 'paid')
       RETURNING *
     `
 
