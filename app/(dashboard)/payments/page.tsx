@@ -368,8 +368,8 @@ export default function PaymentsPage() {
                     <TableCell>{payment.chit_fund_name}</TableCell>
                     <TableCell>Month {payment.month_number}</TableCell>
                     <TableCell className="font-medium">{formatAmount(payment.amount)}</TableCell>
-                    <TableCell>{formatDate(payment.payment_date)}</TableCell>
-                    <TableCell className="capitalize">{payment.payment_method.replace("_", " ")}</TableCell>
+                    <TableCell>{formatDate(payment.payment_date || (payment as any).paid_date || new Date().toISOString())}</TableCell>
+                    <TableCell className="capitalize">{payment.payment_method?.replace("_", " ") || "Cash"}</TableCell>
                     <TableCell>
                       <Badge
                         className={
