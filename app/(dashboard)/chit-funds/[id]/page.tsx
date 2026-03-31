@@ -11,7 +11,6 @@ import {
   Users,
   Calendar,
   IndianRupee,
-  Percent,
   UserPlus,
   Trash2,
   Loader2,
@@ -64,7 +63,7 @@ interface Member {
 interface ChitFund {
   id: string
   name: string
-  total_amount: string
+  total_value: string
   monthly_contribution: string
   total_members: number
   member_count: string
@@ -73,7 +72,6 @@ interface ChitFund {
   collected_amount: string
   start_date: string
   status: string
-  commission_percentage: string
   members: Member[]
 }
 
@@ -256,7 +254,7 @@ export default function ChitFundDetailPage({ params }: { params: Promise<{ id: s
               <h1 className="text-2xl font-bold tracking-tight">{chitFund.name}</h1>
               {getStatusBadge(chitFund.status)}
             </div>
-            <p className="text-muted-foreground">{formatAmount(chitFund.total_amount)} chit fund</p>
+            <p className="text-muted-foreground">{formatAmount(chitFund.total_value)} chit fund</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -346,11 +344,11 @@ export default function ChitFundDetailPage({ params }: { params: Promise<{ id: s
           <CardContent className="pt-6">
             <div className="flex items-center gap-4">
               <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
-                <Percent className="h-6 w-6 text-primary" />
+                <IndianRupee className="h-6 w-6 text-primary" />
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Commission</p>
-                <p className="text-2xl font-bold">{chitFund.commission_percentage}%</p>
+                <p className="text-sm text-muted-foreground">Total Value</p>
+                <p className="text-2xl font-bold">{formatAmount(chitFund.total_value)}</p>
               </div>
             </div>
           </CardContent>

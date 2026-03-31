@@ -38,7 +38,7 @@ interface MonthlyCollection {
 interface ChitFundPerformance {
   id: string
   name: string
-  total_amount: string
+  total_value: string
   duration_months: number
   current_month: number
   status: string

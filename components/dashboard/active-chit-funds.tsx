@@ -10,7 +10,7 @@ import { ArrowRight, Users } from "lucide-react"
 interface ChitFund {
   id: string
   name: string
-  total_amount: string | number
+  total_value: string | number
   monthly_contribution: string | number
   total_members: number
   member_count: string | number
@@ -67,7 +67,7 @@ export function ActiveChitFunds({ chitFunds }: ActiveChitFundsProps) {
               const memberCount = Number(fund.member_count)
               const progress = calculateProgress(fund.current_month, fund.duration_months)
               const collectedAmount = Number(fund.collected_amount)
-              const totalAmount = Number(fund.total_amount)
+              const totalAmount = Number(fund.total_value)
               const collectionProgress = calculateProgress(collectedAmount, totalAmount * fund.duration_months)
 
               return (
@@ -80,7 +80,7 @@ export function ActiveChitFunds({ chitFunds }: ActiveChitFundsProps) {
                     <div className="flex-1 min-w-0">
                       <h4 className="font-medium truncate">{fund.name}</h4>
                       <p className="text-sm text-muted-foreground">
-                        {formatAmount(fund.total_amount)} &middot; {fund.duration_months} months
+                        {formatAmount(fund.total_value)} &middot; {fund.duration_months} months
                       </p>
                     </div>
                     <Badge variant="secondary" className="shrink-0">

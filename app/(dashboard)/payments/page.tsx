@@ -3,7 +3,7 @@
 import * as React from "react"
 import Link from "next/link"
 import useSWR from "swr"
-import { Plus, Search, Filter, Calendar, IndianRupee, Loader2 } from "lucide-react"
+import { Plus, Search, Filter, Calendar, IndianRupee, Loader2, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -31,6 +31,17 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Empty } from "@/components/ui/empty"
@@ -72,6 +83,7 @@ export default function PaymentsPage() {
   const [chitFundFilter, setChitFundFilter] = React.useState("all")
   const [addPaymentOpen, setAddPaymentOpen] = React.useState(false)
   const [isSubmitting, setIsSubmitting] = React.useState(false)
+  const [deletingId, setDeletingId] = React.useState<string | null>(null)
 
   const [selectedChitFund, setSelectedChitFund] = React.useState("")
   const [selectedMember, setSelectedMember] = React.useState("")
@@ -125,6 +137,27 @@ export default function PaymentsPage() {
     setMonthNumber("")
     setPaymentMethod("cash")
     setPaymentDate(new Date().toISOString().split("T")[0])
+  }
+
+  const handleDeletePayment = async (paymentId: string) => {
+    setDeletingId(paymentId)
+    try {
+      const response = await fetch(`/api/payments/${paymentId}`, {
+        method: "DELETE",
+      })
+
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.error || "Failed to delete payment")
+      }
+
+      toast({ title: "Payment deleted successfully" })
+      mutate()
+    } catch (error: any) {
+      toast({ title: "Error", description: error.message, variant: "destructive" })
+    } finally {
+      setDeletingId(null)
+    }
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -354,6 +387,7 @@ export default function PaymentsPage() {
                   <TableHead>Date</TableHead>
                   <TableHead>Method</TableHead>
                   <TableHead>Status</TableHead>
+                  <TableHead className="w-[60px]"></TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -380,6 +414,34 @@ export default function PaymentsPage() {
                       >
                         {payment.status}
                       </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive">
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Delete Payment?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              This will permanently delete this payment record and its associated transaction. This action cannot be undone.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction
+                              onClick={() => handleDeletePayment(payment.id)}
+                              disabled={deletingId === payment.id}
+                              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                            >
+                              {deletingId === payment.id && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                              Delete
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
                     </TableCell>
                   </TableRow>
                 ))}

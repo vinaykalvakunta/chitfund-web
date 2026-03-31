@@ -30,7 +30,7 @@ const fetcher = async (url: string) => { const res = await fetch(url); if (!res.
 interface ChitFund {
   id: string
   name: string
-  total_amount: string
+  total_value: string
   monthly_contribution: string
   total_members: number
   member_count: string
@@ -39,7 +39,6 @@ interface ChitFund {
   collected_amount: string
   start_date: string
   status: string
-  commission_percentage: string
 }
 
 export default function ChitFundsPage() {
@@ -177,7 +176,7 @@ export default function ChitFundsPage() {
                   <div className="flex items-start justify-between">
                     <div>
                       <CardTitle className="text-lg">{fund.name}</CardTitle>
-                      <CardDescription className="mt-1">{formatAmount(fund.total_amount)}</CardDescription>
+                      <CardDescription className="mt-1">{formatAmount(fund.total_value)}</CardDescription>
                     </div>
                     <div className="flex items-center gap-2">
                       {getStatusBadge(fund.status)}

@@ -62,11 +62,32 @@ function NavLink({
   )
 }
 
+function Logo({ className }: { className?: string }) {
+  const [imgError, setImgError] = React.useState(false)
+
+  if (imgError) {
+    return (
+      <div className={`flex items-center justify-center rounded-md bg-primary text-primary-foreground font-bold ${className || "h-8 w-8"}`}>
+        JC
+      </div>
+    )
+  }
+
+  return (
+    <img
+      src="/logo.png"
+      alt="Jyothi's Chitfund Logo"
+      className={`object-contain ${className || "h-8 w-8"}`}
+      onError={() => setImgError(true)}
+    />
+  )
+}
+
 function Sidebar() {
   return (
     <div className="flex h-full flex-col bg-sidebar">
       <div className="flex h-16 items-center gap-3 border-b border-sidebar-border px-6">
-        <img src="/logo.png" alt="Jyothi's Chitfund Logo" className="h-8 w-8 object-contain" />
+        <Logo />
         <span className="text-lg font-bold text-sidebar-foreground tracking-tight">Jyothi's Chitfund</span>
       </div>
       <ScrollArea className="flex-1 px-3 py-4">
@@ -113,7 +134,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <div className="flex h-full flex-col">
                 <div className="flex h-16 items-center justify-between border-b px-4">
                   <div className="flex items-center gap-3">
-                    <img src="/logo.png" alt="Jyothi's Chitfund Logo" className="h-7 w-7 object-contain" />
+                    <Logo className="h-7 w-7" />
                     <span className="text-lg font-bold tracking-tight">Jyothi's Chitfund</span>
                   </div>
                   <Button variant="ghost" size="icon" onClick={() => setOpen(false)}>
@@ -131,7 +152,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </SheetContent>
           </Sheet>
           <div className="flex items-center gap-3">
-            <img src="/logo.png" alt="Jyothi's Chitfund Logo" className="h-7 w-7 object-contain" />
+            <Logo className="h-7 w-7" />
             <span className="text-lg font-bold tracking-tight">Jyothi's Chitfund</span>
           </div>
         </header>

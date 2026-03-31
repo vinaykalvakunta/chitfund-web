@@ -22,11 +22,11 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 
     // Get members of this chit fund
     const members = await sql`
-      SELECT m.id, m.name, m.phone, m.email, cfm.ticket_number, cfm.joined_at
+      SELECT m.id, m.name, m.phone, m.email, cfm.joined_at
       FROM members m
       JOIN chit_fund_members cfm ON cfm.member_id = m.id
       WHERE cfm.chit_fund_id = ${id}
-      ORDER BY cfm.ticket_number
+      ORDER BY cfm.joined_at
     `
 
     return NextResponse.json({ ...chitFund[0], members })
